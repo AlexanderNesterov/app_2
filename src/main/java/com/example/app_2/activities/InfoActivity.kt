@@ -5,9 +5,12 @@ import android.content.Intent
 import android.os.Bundle
 import android.widget.Button
 import android.widget.TextView
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.example.app_2.R
 import com.example.app_2.controllers.BookController
+import com.example.app_2.models.Book
+import com.example.app_2.models.Constants
 
 
 class InfoActivity : AppCompatActivity() {
@@ -42,21 +45,66 @@ class InfoActivity : AppCompatActivity() {
         bookYear!!.text = book.year.toString()
         bookPages!!.text = book.pages.toString()
 
-        deleteButton!!.setOnClickListener{
-            bookController.deleteById(book.id)
-            val intent = Intent(this, MainActivity::class.java)
-            startActivity(intent)
+        deleteButton!!.setOnClickListener {
+            deleteBook(book)
         }
 
-        updateButton!!.setOnClickListener{
-            book.name = bookName!!.text.toString()
-            book.author = bookAuthor!!.text.toString()
-            book.pages = bookPages!!.text.toString().toInt()
-            book.year = bookYear!!.text.toString().toInt()
+        updateButton!!.setOnClickListener {
+            try {
+                book.name = bookName!!.text.toString()
+                book.author = bookAuthor!!.text.toString()
+                book.pages = bookPages!!.text.toString().toInt()
+                book.year = bookYear!!.text.toString().toInt()
+                updateBook(book)
+            } catch (e: java.lang.NumberFormatException) {
+                Toast.makeText(
+                    this@InfoActivity,
+                    Constants.FAILED_UPDATE,
+                    Toast.LENGTH_LONG
+                ).show()
+            }
+        }
+    }
 
-            println("book to update: $book")
+    private fun deleteBook(book: Book) {
+        val deletedBookId = bookController.deleteById(book.id)
+        if (deletedBookId != -1) {
+            Toast.makeText(
+                this@InfoActivity,
+                Constants.SUCCESS_DELETE,
+                Toast.LENGTH_LONG
+            ).show()
+            val intent = Intent(this, MainActivity::class.java)
+            startActivity(intent)
+        } else {
+            Toast.makeText(
+                this@InfoActivity,
+                Constants.FAILED_DELETE,
+                Toast.LENGTH_LONG
+            )
+                .show()
+        }
+    }
 
-            bookController.updateBook(book)
+    private fun updateBook(book: Book) {
+        val updatedBook = bookController.updateBook(book)
+
+        if (updatedBook.id != -1) {
+            Toast.makeText(
+                this@InfoActivity,
+                Constants.SUCCESS_UPDATE,
+                Toast.LENGTH_LONG
+            )
+                .show()
+            val intent = Intent(this, MainActivity::class.java)
+            startActivity(intent)
+        } else {
+            Toast.makeText(
+                this@InfoActivity,
+                Constants.FAILED_UPDATE,
+                Toast.LENGTH_LONG
+            )
+                .show()
         }
     }
 

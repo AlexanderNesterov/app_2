@@ -60,7 +60,7 @@ class BookRepository(_bookList: ArrayList<Book>) {
         return foundBook.id
     }
 
-    fun isBookValid(book: Book): Boolean {
+    private fun isBookValid(book: Book): Boolean {
         return book.name.isNotEmpty()
                 && book.author.isNotEmpty()
                 && book.year > 0

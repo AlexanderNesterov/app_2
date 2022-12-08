@@ -41,7 +41,7 @@ class MainActivity : AppCompatActivity() {
         val adapter = ArrayAdapter(this, android.R.layout.simple_list_item_1, bookInfoList)
         listView!!.adapter = adapter
 
-        createButton!!.setOnClickListener{
+        createButton!!.setOnClickListener {
             val intent = Intent(this, NewBookActivity::class.java)
             startActivity(intent)
         }
